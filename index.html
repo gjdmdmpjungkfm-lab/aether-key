@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Aether Key System</title>
+    <style>
+        body { background: #0f172a; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; width: 350px; }
+        h2 { margin-bottom: 10px; color: #38bdf8; }
+        p { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; box-sizing: border-box; background: #0f172a; border: 1px solid #334155; color: #38bdf8; font-size: 16px; text-align: center; border-radius: 6px; outline: none; cursor: pointer; }
+        .note { font-size: 12px; color: #64748b; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Aether Key System</h2>
+        <p>Ваш ключ действителен на текущий 6-часовой интервал.</p>
+        <input type="text" id="keyBox" readonly onclick="this.select(); document.execCommand('copy'); alert('Ключ скопирован!');">
+        <div class="note">Нажмите на поле, чтобы скопировать ключ</div>
+    </div>
+
+    <script>
+        // Автоматический расчет ключа на основе каждых 6 часов
+        const date = new Date();
+        const timeBlock = Math.floor((date.getTime() / (1000 * 60 * 60)) / 6);
+        const generatedKey = "AETHER_" + (timeBlock * 777).toString(36).toUpperCase();
+        document.getElementById('keyBox').value = generatedKey;
+    </script>
+</body>
+</html>
