@@ -159,13 +159,14 @@ const timerEl = document.getElementById('timer');
 const prog = document.getElementById('prog');
 const lockIcon = document.getElementById('lockIcon');
 
+// Если пришли по рекламной ссылке — сохраняем текущий блок числом
 if (isUnlocked === 'true') {
     localStorage.setItem('aether_block', timeBlock);
     localStorage.setItem('aether_unlocked', 'true');
     window.history.replaceState({}, document.title, window.location.pathname);
 }
 
-const savedBlock = localStorage.getItem('aether_block');
+const savedBlock = Number(localStorage.getItem('aether_block'));
 const hasToken = localStorage.getItem('aether_unlocked');
 
 function copyKey() {
@@ -185,7 +186,8 @@ function copyKey() {
     }
 }
 
-if (hasToken === 'true' && savedBlock == timeBlock) {
+// Строгая проверка с приведением типов
+if (hasToken === 'true' && savedBlock === timeBlock) {
     keyBox.textContent = "AETHER_" + (timeBlock * 777).toString(36).toUpperCase();
     keyBox.style.cursor = "pointer";
     keyBox.onclick = copyKey;
@@ -206,6 +208,7 @@ if (hasToken === 'true' && savedBlock == timeBlock) {
     tick(); setInterval(tick, 1000);
 } else {
     localStorage.removeItem('aether_unlocked');
+    localStorage.removeItem('aether_block');
     document.body.classList.add('locked');
     lockIcon.hidden = false;
     document.getElementById('timerSub').hidden = true;
