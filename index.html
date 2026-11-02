@@ -1,110 +1,221 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <!-- Этот тег обязателен для адаптации под мобильные экраны -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aether Key System</title>
-    <style>
-        body { 
-            background: #0f172a; 
-            color: #fff; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            margin: 0; 
-            padding: 15px;
-            box-sizing: border-box;
-        }
-        .card { 
-            background: #1e293b; 
-            padding: 25px 20px; 
-            border-radius: 12px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
-            text-align: center; 
-            width: 100%; 
-            max-width: 380px; 
-            box-sizing: border-box;
-        }
-        h2 { margin-bottom: 10px; color: #38bdf8; font-size: 22px; }
-        p { color: #94a3b8; font-size: 14px; margin-bottom: 20px; line-height: 1.4; }
-        input { 
-            width: 100%; 
-            padding: 14px 10px; 
-            box-sizing: border-box; 
-            background: #0f172a; 
-            border: 1px solid #334155; 
-            color: #38bdf8; 
-            font-size: 16px; 
-            text-align: center; 
-            border-radius: 6px; 
-            outline: none; 
-            cursor: pointer; 
-        }
-        .note { font-size: 12px; color: #64748b; margin-top: 15px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aether — ключ доступа</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070a18;
+  --panel:rgba(18,24,52,.62);
+  --line:rgba(140,170,255,.16);
+  --text:#eef2ff;
+  --muted:#8c97c4;
+  --a:#7dd3fc;
+  --b:#a78bfa;
+  --ok:#4ade80;
+  --bad:#fb7185;
+  --ring:var(--a);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Sora',system-ui,-apple-system,'Segoe UI',sans-serif;
+  display:flex;align-items:center;justify-content:center;
+  padding:max(20px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));
+  overflow-x:hidden;
+  position:relative;
+}
+/* aurora */
+body::before,body::after{
+  content:"";position:fixed;z-index:0;border-radius:50%;filter:blur(90px);pointer-events:none;
+}
+body::before{width:520px;height:520px;left:-160px;top:-180px;background:radial-gradient(circle,rgba(125,211,252,.30),transparent 65%);animation:drift 18s ease-in-out infinite alternate}
+body::after{width:560px;height:560px;right:-200px;bottom:-220px;background:radial-gradient(circle,rgba(167,139,250,.32),transparent 65%);animation:drift 22s ease-in-out infinite alternate-reverse}
+@keyframes drift{to{transform:translate(60px,40px) scale(1.12)}}
+
+.card{
+  position:relative;z-index:1;
+  width:100%;max-width:400px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:34px 26px 26px;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  box-shadow:0 30px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+  text-align:center;
+  animation:rise .7s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes rise{from{opacity:0;transform:translateY(18px) scale(.98)}}
+
+.brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:26px;font-weight:700;letter-spacing:.04em;font-size:15px}
+.brand i{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 0 14px var(--a)}
+.brand span{color:var(--muted);font-weight:400}
+
+/* ring */
+.orb{position:relative;width:196px;height:196px;margin:0 auto 24px}
+.orb svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.track{fill:none;stroke:rgba(140,170,255,.12);stroke-width:5}
+.prog{fill:none;stroke:url(#g);stroke-width:5;stroke-linecap:round;stroke-dasharray:553;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear}
+.orb-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.time{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:32px;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.sub{font-size:12px;color:var(--muted)}
+.icon{font-size:44px;line-height:1}
+
+h1{margin:0 0 8px;font-size:22px;font-weight:700;letter-spacing:-.01em}
+#statusText{margin:0 auto 22px;max-width:290px;color:var(--muted);font-size:14px;line-height:1.55}
+
+.key{
+  display:block;width:100%;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-weight:700;font-size:19px;letter-spacing:.06em;
+  color:var(--text);
+  background:rgba(7,10,24,.7);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:18px 14px;
+  margin-bottom:12px;
+  word-break:break-all;
+  user-select:all;
+}
+.key.locked{color:var(--bad);border-color:rgba(251,113,133,.3);letter-spacing:.02em;font-size:16px}
+
+.btn{
+  width:100%;border:0;cursor:pointer;
+  font:600 15px 'Sora',system-ui,sans-serif;
+  color:#06091a;
+  background:linear-gradient(135deg,var(--a),var(--b));
+  padding:16px;border-radius:16px;
+  transition:transform .15s,box-shadow .25s,background .25s;
+  box-shadow:0 10px 30px rgba(125,211,252,.25);
+}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.btn.done{background:var(--ok);box-shadow:0 10px 30px rgba(74,222,128,.28)}
+.btn[hidden]{display:none}
+.note{margin-top:16px;font-size:12px;color:var(--muted);opacity:.85}
+
+/* locked state */
+body.locked{--ring:var(--bad)}
+body.locked .time,body.locked .sub{display:none}
+body.locked .prog{stroke:var(--bad);stroke-dashoffset:553}
+body.locked .track{stroke:rgba(251,113,133,.25)}
+body.locked::before{background:radial-gradient(circle,rgba(251,113,133,.25),transparent 65%)}
+
+@media (prefers-reduced-motion:reduce){
+  *,body::before,body::after{animation:none!important;transition:none!important}
+}
+</style>
 </head>
 <body>
-    <div class="card">
-        <h2>Aether Key System</h2>
-        <p id="statusText">Ваш ключ действителен на текущий 6-часовой интервал.</p>
-        <input type="text" id="keyBox" readonly>
-        <div class="note" id="noteText">Нажмите на поле, чтобы скопировать ключ</div>
+<main class="card">
+  <div class="brand"><i></i>AETHER <span>Key System</span></div>
+
+  <div class="orb">
+    <svg viewBox="0 0 196 196" aria-hidden="true">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#7dd3fc"/><stop offset="1" stop-color="#a78bfa"/>
+        </linearGradient>
+      </defs>
+      <circle class="track" cx="98" cy="98" r="88"/>
+      <circle class="prog" id="prog" cx="98" cy="98" r="88"/>
+    </svg>
+    <div class="orb-in">
+      <div class="icon" id="lockIcon" hidden>🔒</div>
+      <div class="time" id="timer">--:--:--</div>
+      <div class="sub" id="timerSub">до смены ключа</div>
     </div>
+  </div>
 
-    <script>
-        // Получаем параметры из адресной строки
-        const urlParams = new URLSearchParams(window.location.search);
-        const isUnlocked = urlParams.get('unlocked');
-        
-        // Автоматический расчет текущего 6-часового блока
-        const date = new Date();
-        const timeBlock = Math.floor((date.getTime() / (1000 * 60 * 60)) / 6);
-        
-        const keyBox = document.getElementById('keyBox');
-        const statusText = document.getElementById('statusText');
-        const noteText = document.getElementById('noteText');
+  <h1 id="title">Ваш ключ готов</h1>
+  <p id="statusText">Ключ действителен на текущий 6-часовой интервал.</p>
 
-        // Если пользователь пришел по правильной ссылке с рекламы
-        if (isUnlocked === 'true') {
-            localStorage.setItem('aether_block', timeBlock);
-            localStorage.setItem('aether_unlocked', 'true');
-            
-            // Очищаем URL от параметра, чтобы при обновлении страница снова не считалась разблокированной
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
+  <code class="key" id="keyBox">Загрузка…</code>
+  <button class="btn" id="copyBtn" type="button" hidden>Скопировать ключ</button>
 
-        // Проверяем, есть ли валидный токен и совпадает ли текущий 6-часовой интервал
-        const savedBlock = localStorage.getItem('aether_block');
-        const hasToken = localStorage.getItem('aether_unlocked');
+  <div class="note" id="noteText">Нажмите на ключ или кнопку, чтобы скопировать</div>
+</main>
 
-        if (hasToken === 'true' && savedBlock == timeBlock) {
-            // Генерируем действующий ключ
-            const generatedKey = "AETHER_" + (timeBlock * 777).toString(36).toUpperCase();
-            keyBox.value = generatedKey;
-            
-            // Вешаем событие копирования для мобильных устройств
-            keyBox.style.cursor = "pointer";
-            keyBox.onclick = function() {
-                this.select();
-                this.setSelectionRange(0, 99999); // Для корректной работы на мобильных ОС
-                navigator.clipboard.writeText(this.value).then(() => {
-                    alert('Ключ скопирован!');
-                }).catch(() => {
-                    document.execCommand('copy');
-                    alert('Ключ скопирован!');
-                });
-            };
-        } else {
-            // Если зашли напрямую или обновили страницу — сбрасываем доступ
-            localStorage.removeItem('aether_unlocked');
-            keyBox.value = "ТРЕБУЕТСЯ КЛЮЧ";
-            keyBox.style.color = "#ef4444";
-            statusText.innerText = "Доступ заблокирован. Пройдите по ссылке рекламы!";
-            noteText.innerText = "Обновление страницы не сбрасывает таймер рекламы.";
-        }
-    </script>
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const isUnlocked = urlParams.get('unlocked');
+
+const date = new Date();
+const timeBlock = Math.floor((date.getTime() / (1000 * 60 * 60)) / 6);
+
+const keyBox = document.getElementById('keyBox');
+const statusText = document.getElementById('statusText');
+const noteText = document.getElementById('noteText');
+const copyBtn = document.getElementById('copyBtn');
+const title = document.getElementById('title');
+const timerEl = document.getElementById('timer');
+const prog = document.getElementById('prog');
+const lockIcon = document.getElementById('lockIcon');
+
+if (isUnlocked === 'true') {
+    localStorage.setItem('aether_block', timeBlock);
+    localStorage.setItem('aether_unlocked', 'true');
+    window.history.replaceState({}, document.title, window.location.pathname);
+}
+
+const savedBlock = localStorage.getItem('aether_block');
+const hasToken = localStorage.getItem('aether_unlocked');
+
+function copyKey() {
+    const text = keyBox.textContent;
+    const ok = () => {
+        copyBtn.textContent = 'Скопировано';
+        copyBtn.classList.add('done');
+        setTimeout(() => { copyBtn.textContent = 'Скопировать ключ'; copyBtn.classList.remove('done'); }, 1800);
+    };
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(ok).catch(fallback);
+    } else fallback();
+    function fallback() {
+        const r = document.createRange(); r.selectNodeContents(keyBox);
+        const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        document.execCommand('copy'); ok();
+    }
+}
+
+if (hasToken === 'true' && savedBlock == timeBlock) {
+    keyBox.textContent = "AETHER_" + (timeBlock * 777).toString(36).toUpperCase();
+    keyBox.style.cursor = "pointer";
+    keyBox.onclick = copyKey;
+    copyBtn.hidden = false;
+    copyBtn.onclick = copyKey;
+
+    const total = 6 * 3600 * 1000;
+    const end = (timeBlock + 1) * total;
+    const C = 553;
+    const pad = n => String(n).padStart(2, '0');
+    const tick = () => {
+        const left = Math.max(0, end - Date.now());
+        if (left === 0) { location.reload(); return; }
+        const h = Math.floor(left / 3600000), m = Math.floor(left % 3600000 / 60000), s = Math.floor(left % 60000 / 1000);
+        timerEl.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
+        prog.style.strokeDashoffset = C * (1 - left / total);
+    };
+    tick(); setInterval(tick, 1000);
+} else {
+    localStorage.removeItem('aether_unlocked');
+    document.body.classList.add('locked');
+    lockIcon.hidden = false;
+    document.getElementById('timerSub').hidden = true;
+    timerEl.hidden = true;
+    title.textContent = "Доступ закрыт";
+    keyBox.textContent = "ТРЕБУЕТСЯ КЛЮЧ";
+    keyBox.classList.add("locked");
+    statusText.textContent = "Пройдите проверку через рекламную ссылку, чтобы получить ключ.";
+    noteText.textContent = "Обновление страницы не сбрасывает защиту.";
+}
+</script>
 </body>
 </html>
